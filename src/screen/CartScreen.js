@@ -30,7 +30,12 @@ export default function CartScreen() {
   };
 
   const checkoutHandler = () => {
-    navigate("/signin?redirect=/shipping");
+    let user = localStorage.getItem("user");
+    if (user) {
+      navigate("/payment");
+    } else {
+      navigate("/signin");
+    }
   };
 
   return (
