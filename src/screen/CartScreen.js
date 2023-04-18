@@ -31,12 +31,15 @@ export default function CartScreen() {
 
   const checkoutHandler = () => {
     let user = localStorage.getItem("user");
+    localStorage.setItem("price", total);
     if (user) {
       navigate("/payment");
     } else {
       navigate("/signin");
     }
   };
+
+  let total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
 
   return (
     <div>
