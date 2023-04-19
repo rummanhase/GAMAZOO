@@ -43,7 +43,7 @@ function App() {
             <Routes>
               <Route path='/payment' element={<PayementScreen />} />
               <Route path='/signin' element={<SigninScreen />} />
-              <Route path='/games/:slug' element={<ProductScreen />} />
+              <Route path='/games/:id' element={<ProductScreen />} />
               <Route path='/cart' element={<CartScreen />} />
               <Route path='/' element={<HomeScreen />} />
             </Routes>

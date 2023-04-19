@@ -1,43 +1,59 @@
+import { Helmet } from "react-helmet-async";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-import logger from "use-reducer-logger";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Games from "../comnponents/Games";
-import { Helmet } from "react-helmet-async";
 
-const reducer = (state, action) => {
+function reducer(state, action) {
   switch (action.type) {
-    case "FETCH_REQUEST":
-      return { ...state, loading: true };
     case "FETCH_SUCCESS":
-      return { ...state, products: action.payload, loading: false };
-    case "FETCH_FAIL":
-      return { ...state, loading: false, error: action.payload };
+      return { games: action.payload, loading: false, error: null };
+    case "FETCH_FAILURE":
+      return { games: [], loading: false, error: action.payload };
     default:
       return state;
   }
-};
+}
 
 function HomeScreen() {
-  const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
-    products: [],
+  const [state, dispatch] = useReducer(reducer, {
+    games: [],
     loading: true,
-    error: "",
+    error: null,
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: "FETCH_REQUEST" });
+    async function getAllGames() {
       try {
-        const result = await axios.get("/api/products");
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-      } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err.message });
+        const res = await axios.request({
+          url: "https://api-ap-south-1.hygraph.com/v2/clgn9fx6j5jao01ug0fee0fyu/master",
+          method: "POST",
+          data: {
+            query: `{games{
+              description
+              id
+              image
+              name
+              price
+              slug
+            }}`,
+          },
+        });
+
+        dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.games });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE", payload: error.message });
       }
-    };
-    fetchData();
+    }
+
+    getAllGames();
   }, []);
+
+  const { games, loading, error } = state;
+
+  console.log(games, loading, error);
+
   return (
     <>
       <Helmet>
@@ -47,12 +63,12 @@ function HomeScreen() {
       <p>Welcome to the world of Games</p>
       <div className='container'>
         {loading ? (
-          <div>Loading...</div>
+          <p>Loading...</p>
         ) : error ? (
-          <div>{error}</div>
+          <p>{error}</p>
         ) : (
           <Row>
-            {products.map((games) => (
+            {games.map((games) => (
               <Col key={games.slug} sm={6} md={4} lg={3} className='mb-3'>
                 <Games games={games} />
               </Col>
@@ -63,4 +79,5 @@ function HomeScreen() {
     </>
   );
 }
+
 export default HomeScreen;
