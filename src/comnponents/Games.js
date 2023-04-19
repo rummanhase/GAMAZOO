@@ -11,7 +11,7 @@ function Games({ games }) {
   } = state;
 
   const addToCartHandler = (item) => {
-    const existItem = cartItems.find((x) => x.id === games.id);
+    const existItem = cartItems.find((x) => x.id === item.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     ctxDispatch({
       type: "CART_ADD_ITEM",
