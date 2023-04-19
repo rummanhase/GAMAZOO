@@ -11,7 +11,7 @@ function Games({ games }) {
   } = state;
 
   const addToCartHandler = (item) => {
-    const existItem = cartItems.find((x) => x._id === games._id);
+    const existItem = cartItems.find((x) => x.id === games.id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     ctxDispatch({
       type: "CART_ADD_ITEM",
@@ -21,11 +21,15 @@ function Games({ games }) {
 
   return (
     <Card>
-      <Link to={`/games/${games.slug}`}>
-        <img src={games.image} className='card-img-top' alt={games.name} />
+      <Link to={`/games/${games.id}`}>
+        <img
+          src={games.image.image}
+          className='card-img-top'
+          alt={games.name}
+        />
       </Link>
       <Card.Body>
-        <Link to={`/games/${games.slug}`}>
+        <Link to={`/games/${games.id}`}>
           <Card.Title>{games.name}</Card.Title>
         </Link>
         <Card.Text>${games.price}</Card.Text>
